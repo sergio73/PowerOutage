@@ -31,7 +31,7 @@ jobs:
       with:
         push: true
         tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_cc47c1c0ff6646dea17343b48456130a }}/sergio73/poweroutage:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./Server/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
