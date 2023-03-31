@@ -30,7 +30,7 @@ namespace Server.Jobs
                 var shouldAlert = status.LastTimeOnline > status.LastTimeOffline;
                 if (shouldAlert)
                 {
-                    _onlineService.ReportOnline();
+                    _onlineService.SetUserAlerted(false);
                     await _notificationService.NotifyPowerRestore();
                 }
             }
@@ -44,6 +44,8 @@ namespace Server.Jobs
                 if (shouldAlert)
                 {
                     _onlineService.ReportOffline();
+                    _onlineService.SetUserAlerted(true);
+
                     await _notificationService.NotifyPowerOutage();
                 }
             }

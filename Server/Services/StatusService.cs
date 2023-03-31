@@ -8,6 +8,7 @@ namespace Server.Services
     {
         void ReportOffline();
         void ReportOnline();
+        void SetUserAlerted(bool alerted);
         StatusDto GetStatus();
     }
 
@@ -24,18 +25,17 @@ namespace Server.Services
 
         public void ReportOnline()
         {
-            UpdateStatus(status => {
-                status.LastTimeOnline = DateTime.Now;
-                status.UserAlerted = false;
-            });
+            UpdateStatus(status => status.LastTimeOnline = DateTime.Now);
+        }
+
+        public void SetUserAlerted(bool alerted)
+        {
+            UpdateStatus(status => status.UserAlerted = alerted);
         }
 
         public void ReportOffline()
         {
-            UpdateStatus(status => {
-                status.LastTimeOffline = DateTime.Now;
-                status.UserAlerted = true;
-            });
+            UpdateStatus(status => status.LastTimeOffline = DateTime.Now);
         }
 
         public StatusDto GetStatus()
