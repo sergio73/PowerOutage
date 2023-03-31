@@ -2,7 +2,10 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 
+WORKDIR /app
+
 COPY ["Server/entrypoint.sh", "./"]
+COPY ["Server/sshd_config", "/etc/ssh/"]
 
 # Start and enable SSH
 RUN apt-get update \
@@ -11,9 +14,6 @@ RUN apt-get update \
     && echo "root:Docker!" | chpasswd \
     && chmod u+x ./entrypoint.sh
 
-COPY ["Server/sshd_config", "/etc/ssh/"]
-
-WORKDIR /app
 EXPOSE 80 443 2222
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
