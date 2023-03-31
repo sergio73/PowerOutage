@@ -1,16 +1,11 @@
+using System.Security.Policy;
+
 namespace Server.Dtos
 {
     public class EmailServiceDto
     {
-        public EmailServiceDto(EmailAddressDto from, EmailAddressDto to, string sendGridApiKey)
-        {
-            From = from;
-            To = to;
-            SendGridApiKey = sendGridApiKey;
-        }
-
-        public EmailAddressDto From;
-        public EmailAddressDto To;
-        public string SendGridApiKey;
+        public EmailAddressDto? From { get; set; }
+        public EmailAddressDto? To { get; set; }
+        public string? SendGridApiKey { get; set; }
     }
 }

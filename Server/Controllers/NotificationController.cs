@@ -19,6 +19,5 @@ namespace Server.Controllers
         {
             await _notificationService.NotifyPowerOutage();
         }
-             
     }
 }
