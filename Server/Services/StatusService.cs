@@ -15,6 +15,8 @@ namespace Server.Services
     {
         private ISettings _settings;
 
+        private object _lock = new object();
+
         public StatusService(ISettings settings)
         {
             _settings = settings;
@@ -38,19 +40,22 @@ namespace Server.Services
 
         public StatusDto GetStatus()
         {
-            if (!File.Exists(_settings.StatusFileName))
+            lock (_lock)
             {
-                return new StatusDto();
+                if (!File.Exists(_settings.StatusFileName))
+                {
+                    return new StatusDto();
+                }
+
+                var json = File.ReadAllText(_settings.StatusFileName);
+
+                if (string.IsNullOrEmpty(json))
+                {
+                    return new StatusDto();
+                }
+
+                return JsonConvert.DeserializeObject<StatusDto>(json) ?? throw new JsonException("Not possible to deserialize status.json");
             }
-
-            var json = File.ReadAllText(_settings.StatusFileName);
-
-            if (string.IsNullOrEmpty(json))
-            {
-                return new StatusDto();
-            }
-
-            return JsonConvert.DeserializeObject<StatusDto>(json) ?? throw new JsonException("Not possible to deserialize status.json");
         }
 
         private void UpdateStatus(Action<StatusDto> updateFunc) 
@@ -62,8 +67,11 @@ namespace Server.Services
 
         private void WriteStatus(StatusDto statusDto)
         {
-            var json = JsonConvert.SerializeObject(statusDto);
-            File.WriteAllText(_settings.StatusFileName, json);
+            lock (_lock)
+            {
+                var json = JsonConvert.SerializeObject(statusDto);
+                File.WriteAllText(_settings.StatusFileName, json);
+            }
         }
     }
 }
