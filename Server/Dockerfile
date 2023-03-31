@@ -2,6 +2,8 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 
+COPY ["Server/entrypoint.sh", "./"]
+
 # Start and enable SSH
 RUN apt-get update \
     && apt-get install -y --no-install-recommends dialog \
@@ -9,7 +11,6 @@ RUN apt-get update \
     && echo "root:Docker!" | chpasswd \
     && chmod u+x ./entrypoint.sh
 
-COPY ["Server/entrypoint.sh", "./"]
 COPY ["Server/sshd_config", "/etc/ssh/"]
 
 WORKDIR /app
@@ -29,4 +30,4 @@ RUN dotnet publish "Server.csproj" -c Release -o /app/publish /p:UseAppHost=fals
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT [ "./entrypoint.sh" ] 
+ENTRYPOINT [ "bash", "./entrypoint.sh" ] 
